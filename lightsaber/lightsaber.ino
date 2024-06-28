@@ -10,11 +10,11 @@ enum {
 #define MIN_VIB 20
 #define MAX_VIB 255
 
-#define MOVING_AVG_LEN 20
+#define MOVING_AVG_LEN 10
 
-const int triggerPin = 9;
-const int ecoPin = 8;
-const int motorPin = 10;
+const int triggerPin = 10;
+const int ecoPin = 9;
+const int motorPin = 6;
 
 long duration;
 float dist;
@@ -27,9 +27,9 @@ void setup() {
   pinMode(triggerPin, OUTPUT); // Configura o pino trigger como saída
   pinMode(ecoPin, INPUT); // Configura o pino eco como entrada.
   pinMode(motorPin, OUTPUT);
-  Serial.begin(9600); // Inicia a comunicação serial
+  // Serial.begin(9600); // Inicia a comunicação serial
 
-  intensity_mode = INTENSITY_MODE_LINEAR;
+  intensity_mode = INTENSITY_MODE_LOG;
   curr_pos = 0;
 }
 
@@ -59,15 +59,17 @@ void loop() {
   if (dist <= MIN_DIST) dist = 0;
 
   if(intensity_mode == INTENSITY_MODE_LINEAR) motor_intensity = MAX_VIB - ((dist*(MAX_VIB-MIN_VIB))/MAX_DIST);
-  else if(intensity_mode == INTENSITY_MODE_LINEAR) motor_intensity = MAX_VIB - (log10(dist*10.0/MAX_DIST))*(MAX_VIB-MIN_VIB);
+  else if(intensity_mode == INTENSITY_MODE_LOG) motor_intensity = MAX_VIB - (log10(1 + dist*9.0/MAX_DIST))*(MAX_VIB-MIN_VIB);
 
   analogWrite(motorPin, motor_intensity);
 
-  Serial.print("Distancia: ");
-  Serial.print(dist);
-  Serial.print(" Intensity: ");
-  Serial.print(motor_intensity);
-  Serial.print("\n");
+  // Serial.print("Medição: ");
+  // Serial.print(measures[curr_pos-1]);
+  // Serial.print(" Distancia Média: ");
+  // Serial.print(dist);
+  // Serial.print(" Intensidade: ");
+  // Serial.print(motor_intensity);
+  // Serial.print("\n");
 
   // Aguardar 100ms antes da próxima leitura para evitar interferência
   delay(100);
