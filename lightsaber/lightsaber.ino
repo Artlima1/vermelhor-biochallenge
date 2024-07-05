@@ -12,17 +12,17 @@ enum {
   INTENSITY_MODE_LOG,
 };
 
-#define MAX_DIST 300
-#define MIN_DIST 20
-#define MIN_VIB 20
+#define MAX_DIST 200
+#define MIN_DIST 10
+#define MIN_VIB 3
 #define MAX_VIB 255
 
-#define MOVING_AVG_LEN 3
+#define MOVING_AVG_LEN 5
 
-const int lightSensoXShutPin = 6;
+const int lightSensoXShutPin = 7;
 const int triggerPin = 10;
 const int ecoPin = 9;
-const int motorPin = 7;
+const int motorPin = 6;
 
 int intensity_mode;
 int sensor_type;
@@ -136,5 +136,5 @@ float read_sensor(){
     }
   }
 
-  return measure;
+  return (measure < MAX_DIST) ? measure : MAX_DIST;
 }
